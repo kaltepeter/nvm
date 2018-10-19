@@ -13,6 +13,7 @@
 NVM_SCRIPT_SOURCE="$_"
 
 nvm_echo() {
+  echo "hello"
   command printf %s\\n "$*" 2>/dev/null
 }
 
@@ -104,7 +105,8 @@ nvm_download() {
     if nvm_curl_use_compression; then
       CURL_COMPRESSED_FLAG="--compressed"
     fi
-    curl --fail ${CURL_COMPRESSED_FLAG:-} -q "$@"
+    nvm_echo "hello"
+    curl --verbose --fail ${CURL_COMPRESSED_FLAG:-} -q "$@"
   elif nvm_has "wget"; then
     # Emulate curl with wget
     ARGS=$(nvm_echo "$@" | command sed -e 's/--progress-bar /--progress=bar /' \
