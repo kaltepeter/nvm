@@ -2397,6 +2397,8 @@ nvm() {
       nvm_echo '    --skip-default-packages                 When installing, skip the default-packages file if it exists'
       nvm_echo '    --latest-npm                            After installing, attempt to upgrade to the latest working npm on the given node version'
       nvm_echo '    --no-progress                           Disable the progress bar on any downloads'
+      nvm_echo '    --alias=<name>                          After installing, set the alias specified to the version specified. (same as: nvm alias <name> <version>)'
+      nvm_echo '    --default                               After installing, set default alias to the version specified. (same as: nvm alias default <version>)'
       nvm_echo '  nvm uninstall <version>                   Uninstall a version'
       nvm_echo '  nvm uninstall --lts                       Uninstall using automatic LTS (long-term support) alias `lts/*`, if available.'
       nvm_echo '  nvm uninstall --lts=<LTS name>            Uninstall using automatic alias for provided LTS line, if available.'
@@ -2552,6 +2554,7 @@ nvm() {
       nobinary=0
       noprogress=0
       local LTS
+      local ALIAS
       local NVM_UPGRADE_NPM
       NVM_UPGRADE_NPM=0
       while [ $# -ne 0 ]
@@ -2580,6 +2583,14 @@ nvm() {
           ;;
           --latest-npm)
             NVM_UPGRADE_NPM=1
+            shift
+          ;;
+          --default)
+            ALIAS='default'
+            shift
+          ;;
+          --alias=*)
+            ALIAS="${1##--alias=}"
             shift
           ;;
           *)
@@ -2738,6 +2749,11 @@ nvm() {
         else
           nvm_ensure_default_set "$provided_version"
         fi
+
+        if [ -n "${ALIAS}" ]; then
+          nvm alias "${ALIAS}" "${provided_version}"
+        fi
+
         return $?
       fi
 

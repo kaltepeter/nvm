@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -ex
+
+die () { echo "$@" ; exit 1; }
+
+\. ../../nvm.sh
+
+NVM_DEBUG=1 nvm install --alias=9 9.11.2 \
+  | grep '9 -> 9.11.2 (-> v9.11.2)' || die 'did not call through to nvm_make_alias'
